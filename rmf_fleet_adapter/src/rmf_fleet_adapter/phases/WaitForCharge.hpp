@@ -56,7 +56,9 @@ public:
 
     // Documentation inherited from ActivePhase
     const std::string & description() const final;
-  
+
+    const std::string& title() const override;
+
   private:
     friend class Pending;
     Active(
@@ -69,6 +71,7 @@ public:
     rmf_battery::agv::BatterySystem _battery_system;
     double _charge_to_soc;
     std::string _description;
+    std::string _title = "WaitForCharge";
     rxcpp::observable<StatusMsg> _status_obs;
     rxcpp::subjects::subject<StatusMsg> _status_publisher;
     rmf_rxcpp::subscription_guard _battery_soc_subscription;
@@ -90,7 +93,10 @@ public:
 
     // Documentation inherited
     const std::string& description() const final;
-  
+
+    // Documentation inherited
+    const std::string& title() const override;
+
   private:
     friend class WaitForCharge;
     Pending(
@@ -103,6 +109,7 @@ public:
     rmf_battery::agv::BatterySystem _battery_system;
     double _charge_to_soc;
     std::string _description;
+    std::string _title = "WaitForCharge";
     double _time_estimate;
   };
 

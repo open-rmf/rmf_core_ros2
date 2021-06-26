@@ -25,6 +25,7 @@
 #include <rmf_traffic/Time.hpp>
 
 #include <rmf_task_msgs/msg/task_summary.hpp>
+#include <rmf_task_msgs/msg/tasks.hpp>
 
 #include <rmf_task/Request.hpp>
 #include <rmf_task/agv/State.hpp>
@@ -40,6 +41,8 @@ class Task : public std::enable_shared_from_this<Task>
 public:
 
   using StatusMsg = rmf_task_msgs::msg::TaskSummary;
+  using PhaseTierMsg = rmf_task_msgs::msg::PhaseTier;  
+  using PhaseMsg = rmf_task_msgs::msg::Phase;
 
   /// This class represents the active phase of a Task. It provides an
   /// observable that the Task can track to stay up-to-date on the status and to
@@ -59,7 +62,14 @@ public:
     virtual const rxcpp::observable<StatusMsg>& observe() const = 0;
 
     /// Estimate how much time remains in this phase.
+    /// TODO: should we make this optional?
     virtual rmf_traffic::Duration estimate_remaining_time() const = 0;
+
+    /// How long the phase has been active.
+    virtual rmf_traffic::Duration runtime_duration() const
+    {
+      return rmf_traffic::Duration{0};
+    };
 
     /// Activate or deactivate the emergency alarm behavior.
     virtual void emergency_alarm(bool on) = 0;
@@ -69,6 +79,9 @@ public:
 
     /// Human-readable description of the phase
     virtual const std::string& description() const = 0;
+
+    // int type to represent phase type
+    virtual const std::string& title() const = 0;
 
     // Virtual destructor
     virtual ~ActivePhase() = default;
@@ -87,6 +100,9 @@ public:
     /// Human-readable description of the phase
     virtual const std::string& description() const = 0;
 
+    // int type to represent phase type
+    virtual const std::string& title() const = 0;
+
     // Virtual destructor
     virtual ~PendingPhase() = default;
   };
@@ -95,6 +111,7 @@ public:
     std::function<void(const StatusMsg&)>;
 
   using PendingPhases = std::vector<std::unique_ptr<PendingPhase>>;
+  using CompletedPhases = std::vector<PhaseMsg>;
 
   // Make a new task
   static std::shared_ptr<Task> make(
@@ -103,7 +120,8 @@ public:
       rxcpp::schedulers::worker worker,
       rmf_traffic::Time deployment_time,
       rmf_task::agv::State finish_state,
-      rmf_task::ConstRequestPtr request);
+      rmf_task::ConstRequestPtr request,
+      CompletedPhases completed_phases = {});
 
   void begin();
 
@@ -133,6 +151,10 @@ public:
   /// Get the finish state of this Task
   const rmf_task::agv::State finish_state() const;
 
+  /// Get the completed phases of this Task
+  /// TODO: better design on this?
+  const CompletedPhases completed_phases() const;
+
 private:
 
   Task(
@@ -141,14 +163,22 @@ private:
       rxcpp::schedulers::worker worker,
       rmf_traffic::Time deployment_time,
       rmf_task::agv::State finish_state,
-      rmf_task::ConstRequestPtr request);
+      rmf_task::ConstRequestPtr request,
+      CompletedPhases completed_phases);
 
   std::string _id;
 
   // NOTE(MXG): Pending phases are stored in reverse order so we can simply
   // pop_back() to snatch the next phase.
   std::vector<std::unique_ptr<PendingPhase>> _pending_phases;
+
+  // TODO Hackjob: this is the pending phase of the active phase
+  std::unique_ptr<PendingPhase> _active_pending_phase;
   std::shared_ptr<ActivePhase> _active_phase;
+
+  // TODO: not sure whether should we keep a cache of completed phases
+  CompletedPhases _completed_phases;
+  std::vector<std::string> _debug_completed;
 
   rxcpp::schedulers::worker _worker;
 
@@ -160,10 +190,14 @@ private:
   rmf_utils::optional<builtin_interfaces::msg::Time> _initial_time;
 
   rmf_traffic::Time _deployment_time;
+  rmf_traffic::Time _current_phase_start_time;
+  int _debug = 0;
   rmf_task::agv::State _finish_state;
   rmf_task::ConstRequestPtr _request;
 
   void _start_next_phase();
+  
+  PhaseTierMsg _generate_phase_tier();
 
   StatusMsg _process_summary(const StatusMsg& input_msg);
 };

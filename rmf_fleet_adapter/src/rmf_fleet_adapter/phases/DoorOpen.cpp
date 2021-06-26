@@ -19,6 +19,7 @@
 #include "RxOperators.hpp"
 #include "SupervisorHasSession.hpp"
 #include "rmf_fleet_adapter/StandardNames.hpp"
+#include <rmf_traffic/Time.hpp>
 
 #include <utility>
 
@@ -86,6 +87,12 @@ void DoorOpen::ActivePhase::cancel()
 const std::string& DoorOpen::ActivePhase::description() const
 {
   return _description;
+}
+
+//==============================================================================
+const std::string& DoorOpen::ActivePhase::title() const
+{
+  return _title;
 }
 
 //==============================================================================
@@ -238,6 +245,12 @@ rmf_traffic::Duration DoorOpen::PendingPhase::estimate_phase_duration() const
 const std::string& DoorOpen::PendingPhase::description() const
 {
   return _description;
+}
+
+//==============================================================================
+const std::string& DoorOpen::PendingPhase::title() const
+{
+  return _title;
 }
 
 } // namespace phases

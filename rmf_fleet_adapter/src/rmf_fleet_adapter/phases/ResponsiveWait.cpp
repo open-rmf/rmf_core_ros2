@@ -76,6 +76,12 @@ const std::string& ResponsiveWait::Active::description() const
 }
 
 //==============================================================================
+const std::string& ResponsiveWait::Active::title() const
+{
+  return _info.title;
+}
+
+//==============================================================================
 ResponsiveWait::Active::Active(PhaseInfo info)
 : _info(std::move(info))
 {
@@ -168,6 +174,12 @@ rmf_traffic::Duration ResponsiveWait::Pending::estimate_phase_duration() const
 const std::string& ResponsiveWait::Pending::description() const
 {
   return _info.description;
+}
+
+//==============================================================================
+const std::string& ResponsiveWait::Pending::title() const
+{
+  return _info.title;
 }
 
 //==============================================================================

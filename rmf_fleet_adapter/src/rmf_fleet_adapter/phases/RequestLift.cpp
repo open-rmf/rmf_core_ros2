@@ -74,6 +74,12 @@ const std::string& RequestLift::ActivePhase::description() const
 }
 
 //==============================================================================
+const std::string& RequestLift::ActivePhase::title() const
+{
+  return _title;
+}
+
+//==============================================================================
 RequestLift::ActivePhase::ActivePhase(
   agv::RobotContextPtr context,
   std::string lift_name,
@@ -87,7 +93,7 @@ RequestLift::ActivePhase::ActivePhase(
     _located(located)
 {
   std::ostringstream oss;
-  oss << "Requesting lift [" << lift_name << "] to [" << destination << "]";
+  oss << "Requesting lift [" << _lift_name << "] to [" << _destination << "]";
 
   _description = oss.str();
 }
@@ -323,8 +329,7 @@ RequestLift::PendingPhase::PendingPhase(
     _located(located)
 {
   std::ostringstream oss;
-  oss << "Requesting lift \"" << lift_name << "\" to \"" << destination << "\"";
-
+  oss << "Requesting lift [" << _lift_name << "] to [" << _destination << "]";
   _description = oss.str();
 }
 
@@ -350,6 +355,12 @@ rmf_traffic::Duration RequestLift::PendingPhase::estimate_phase_duration() const
 const std::string& RequestLift::PendingPhase::description() const
 {
   return _description;
+}
+
+//==============================================================================
+const std::string& RequestLift::PendingPhase::title() const
+{
+  return _title;
 }
 
 } // namespace phases

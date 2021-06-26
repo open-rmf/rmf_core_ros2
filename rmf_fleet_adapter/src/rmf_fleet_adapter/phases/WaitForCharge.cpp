@@ -55,6 +55,13 @@ const std::string& WaitForCharge::Active::description() const
   return _description;
 }
 
+
+//==============================================================================
+const std::string& WaitForCharge::Active::title() const
+{
+  return "WaitForCharge";
+}
+
 //==============================================================================
 WaitForCharge::Active::Active(
   agv::RobotContextPtr context,
@@ -159,6 +166,12 @@ rmf_traffic::Duration WaitForCharge::Pending::estimate_phase_duration() const
 const std::string& WaitForCharge::Pending::description() const
 {
   return _description;
+}
+
+//==============================================================================
+const std::string& WaitForCharge::Pending::title() const
+{
+  return "WaitForCharge";
 }
 
 //==============================================================================

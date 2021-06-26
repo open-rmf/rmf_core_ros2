@@ -45,7 +45,7 @@ EndLiftSession::Active::Active(
   _lift_name(std::move(lift_name)),
   _destination(std::move(destination))
 {
-  _description = "Ending session with lift [" + lift_name + "]";
+  _description = "Ending session with lift [" + _lift_name + "]";
 }
 
 //==============================================================================
@@ -78,6 +78,12 @@ void EndLiftSession::Active::cancel()
 const std::string& EndLiftSession::Active::description() const
 {
   return _description;
+}
+
+//==============================================================================
+const std::string& EndLiftSession::Active::title() const
+{
+  return _title;
 }
 
 //==============================================================================
@@ -156,7 +162,7 @@ EndLiftSession::Pending::Pending(
   _lift_name(std::move(lift_name)),
   _destination(std::move(destination))
 {
-  _description = "End session with lift [" + lift_name + "]";
+  _description = "End session with lift [" + _lift_name + "]";
 }
 
 //==============================================================================
@@ -178,6 +184,12 @@ rmf_traffic::Duration EndLiftSession::Pending::estimate_phase_duration() const
 const std::string& EndLiftSession::Pending::description() const
 {
   return _description;
+}
+
+//==============================================================================
+const std::string& EndLiftSession::Pending::title() const
+{
+  return _title;
 }
 
 } // namespace phases

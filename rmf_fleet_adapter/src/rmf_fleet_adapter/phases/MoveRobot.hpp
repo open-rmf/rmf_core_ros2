@@ -43,19 +43,25 @@ struct MoveRobot
 
     rmf_traffic::Duration estimate_remaining_time() const override;
 
+    rmf_traffic::Duration runtime_duration() const override;
+
     void emergency_alarm(bool on) override;
 
     void cancel() override;
 
     const std::string& description() const override;
 
+    const std::string& title() const override;
+
   private:
 
     agv::RobotContextPtr _context;
     std::string _description;
+    std::string _title = "Move";
     std::shared_ptr<Action> _action;
     rxcpp::observable<Task::StatusMsg> _obs;
     rxcpp::subjects::subject<bool> _cancel_subject;
+    rmf_traffic::Time _start_time;
     std::optional<rmf_traffic::Duration> _tail_period;
   };
 
@@ -74,12 +80,16 @@ struct MoveRobot
 
     const std::string& description() const override;
 
+    const std::string& title() const override;
+
   private:
 
     agv::RobotContextPtr _context;
     std::vector<rmf_traffic::agv::Plan::Waypoint> _waypoints;
     std::optional<rmf_traffic::Duration> _tail_period;
     std::string _description;
+    std::string _title = "Move";
+    rmf_traffic::Duration _duration_estimate;
   };
 
   class Action : public std::enable_shared_from_this<Action>
@@ -94,10 +104,16 @@ struct MoveRobot
     template<typename Subscriber>
     void operator()(const Subscriber& s);
 
+    rmf_traffic::Duration remaining_duration()
+    {
+      return _remaining_duration;
+    };
+
   private:
 
     agv::RobotContextPtr _context;
     std::vector<rmf_traffic::agv::Plan::Waypoint> _waypoints;
+    rmf_traffic::Duration _remaining_duration;
     std::optional<rmf_traffic::Duration> _tail_period;
     std::optional<rmf_traffic::Time> _last_tail_bump;
     std::size_t _next_path_index = 0;
@@ -116,6 +132,11 @@ void MoveRobot::Action::operator()(const Subscriber& s)
     const auto action = w_action.lock();
     if (!action)
       return;
+
+    // update estimate duration from current wp to the destination waypoint
+    // TODO is it index -1?
+    action->_remaining_duration = 
+      action->_waypoints.back().time() - action->_waypoints[path_index].time();
 
     if (path_index == action->_waypoints.size()-1
         && estimate < std::chrono::seconds(1)

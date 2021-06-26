@@ -55,6 +55,8 @@ struct RequestLift
 
     const std::string& description() const override;
 
+    const std::string& title() const override;
+
   private:
 
     agv::RobotContextPtr _context;
@@ -63,6 +65,7 @@ struct RequestLift
     rmf_traffic::Time _expected_finish;
     rxcpp::subjects::behavior<bool> _cancelled = rxcpp::subjects::behavior<bool>(false);
     std::string _description;
+    std::string _title = "CallLift";
     rxcpp::observable<Task::StatusMsg> _obs;
     rclcpp::TimerBase::SharedPtr _timer;
     std::shared_ptr<EndLiftSession::Active> _lift_end_phase;
@@ -110,6 +113,8 @@ struct RequestLift
 
     const std::string& description() const override;
 
+    const std::string& title() const override;
+
   private:
     agv::RobotContextPtr _context;
     std::string _lift_name;
@@ -117,6 +122,7 @@ struct RequestLift
     rmf_traffic::Time _expected_finish;
     Located _located;
     std::string _description;
+    std::string _title = "CallLift";
   };
 };
 

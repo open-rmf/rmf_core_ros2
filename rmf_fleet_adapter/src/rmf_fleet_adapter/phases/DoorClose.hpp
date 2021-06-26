@@ -57,6 +57,8 @@ struct DoorClose
 
     const std::string& description() const override;
 
+    const std::string& title() const override;
+
   private:
 
     agv::RobotContextPtr _context;
@@ -64,6 +66,7 @@ struct DoorClose
     std::string _request_id;
     rxcpp::observable<Task::StatusMsg> _obs;
     std::string _description;
+    std::string _title = "CloseDoor";
     rclcpp::TimerBase::SharedPtr _timer;
     Task::StatusMsg _status;
 
@@ -94,12 +97,15 @@ struct DoorClose
 
     const std::string& description() const override;
 
+    const std::string& title() const override;
+
   private:
 
     agv::RobotContextPtr _context;
     std::string _door_name;
     std::string _request_id;
     std::string _description;
+    std::string _title = "CloseDoor";
   };
 };
 
