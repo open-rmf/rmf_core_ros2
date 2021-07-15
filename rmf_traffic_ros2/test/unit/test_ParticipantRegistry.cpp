@@ -49,11 +49,14 @@ SCENARIO("Test idempotency of shape type")
   REQUIRE_THROWS(shape_type(node["type"]));
 }
 
+namespace rmf_traffic {
 
 bool operator==(const rmf_traffic::Profile p1, const rmf_traffic::Profile p2)
 {
   return rmf_traffic_ros2::convert(p1) == rmf_traffic_ros2::convert(p2);
 }
+
+namespace schedule {
 
 bool operator==(
   const rmf_traffic::schedule::ParticipantDescription desc1,
@@ -65,6 +68,12 @@ bool operator==(
     && desc1.profile() == desc2.profile();
 }
 
+} // namespace schedule
+} // namespace rmf_traffic
+
+namespace rmf_traffic_ros2 {
+namespace schedule {
+
 bool operator==(
   const AtomicOperation op1,
   const AtomicOperation op2)
@@ -72,6 +81,9 @@ bool operator==(
   return op1.operation == op2.operation
     && op1.description == op2.description;
 }
+
+} // namespace schedule
+} // namespace rmf_traffic_ros2
 
 SCENARIO("Test idempotency of ParticipantDescription.")
 {
