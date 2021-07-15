@@ -19,6 +19,7 @@ jobs:
         env:
           CC: clang
           CXX: clang++
+          RMW_IMPLEMENTATION: rmw_cyclonedds_cpp
         with:
           target-ros2-distro: foxy
           # build all packages listed in the meta package
