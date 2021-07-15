@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
   std::vector<class_loader::ClassLoader*> loaders;
   std::vector<rclcpp_components::NodeInstanceWrapper> node_wrappers;
 
-  std::vector<std::string> libraries = 
+  std::vector<std::string> libraries =
   {
     // all classes from libraries linked by the linker (rather then dlopen)
     // are registered under the library_path ""
@@ -51,31 +51,27 @@ int main(int argc, char* argv[])
   if (failover_mode)
   {
     RCLCPP_ERROR(logger, "robot_state_aggregator was compiled without failover"
-                 " support. Make sure you have the required libraries and the"
-                 " environment variable $RMF_ENABLE_FAILOVER is set during"
-                 " compilation.");
+      " support. Make sure you have the required libraries and the"
+      " environment variable $RMF_ENABLE_FAILOVER is set during"
+      " compilation.");
     return 1;
   }
 #endif
 
   for (auto library : libraries)
   {
-    RCLCPP_INFO(logger, "Library");
-
     auto loader = new class_loader::ClassLoader(library);
     auto classes =
       loader->getAvailableClasses<rclcpp_components::NodeFactory>();
 
     for (auto clazz : classes)
     {
-      RCLCPP_INFO(logger, "before if %s", clazz.c_str());
-      if (failover_mode || 
-         ((clazz.compare("rclcpp_components::NodeFactoryTemplate"
-         "<lifecycle_heartbeat::LifecycleHeartbeat>") != 0) &&
-         ((clazz.compare("rclcpp_components::NodeFactoryTemplate"
-         "<lifecycle_watchdog::LifecycleWatchdog>") != 0))))
+      if (failover_mode ||
+        ((clazz.compare("rclcpp_components::NodeFactoryTemplate"
+        "<lifecycle_heartbeat::LifecycleHeartbeat>") != 0) &&
+        ((clazz.compare("rclcpp_components::NodeFactoryTemplate"
+        "<lifecycle_watchdog::LifecycleWatchdog>") != 0))))
       {
-        RCLCPP_INFO(logger, "Instantiate class %s", clazz.c_str());
         auto node_factory =
           loader->createInstance<rclcpp_components::NodeFactory>(clazz);
         auto wrapper = node_factory->create_node_instance(options);

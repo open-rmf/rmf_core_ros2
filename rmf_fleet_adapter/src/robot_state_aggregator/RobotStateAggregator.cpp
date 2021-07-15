@@ -42,7 +42,7 @@ public:
   explicit RobotStateAggregator(const rclcpp::NodeOptions& options)
   : rclcpp::Node("robot_state_aggregator", options)
   {
-    RCLCPP_WARN(get_logger(), "RobotStateAggregator called");
+    RCLCPP_DEBUG(get_logger(), "RobotStateAggregator called");
     const auto default_qos = rclcpp::SystemDefaultsQoS();
     const auto sensor_qos = rclcpp::SensorDataQoS();
 
@@ -59,7 +59,7 @@ public:
 
     _fleet_state_pub = create_publisher<FleetState>(
       rmf_fleet_adapter::FleetStateTopicName, default_qos);
-
+// *INDENT-OFF*
 #ifdef FAILOVER_MODE
     if (_active_node)
     {
@@ -82,7 +82,7 @@ public:
         Status::SharedPtr msg) -> void
         {
           const auto sensor_qos = rclcpp::SensorDataQoS();
-          RCLCPP_WARN(get_logger(), "Watchdog rised at %s, "
+          RCLCPP_DEBUG(get_logger(), "Watchdog rised at %s, "
           "self activation triggered",
           _active_status_topic.c_str(),
           msg->stamp.sec);
@@ -98,7 +98,7 @@ public:
         });
     }
 #endif
-
+// *INDENT-ON*
     const auto prefix = this->declare_parameter("robot_prefix", "");
     const auto fleet_name = this->declare_parameter("fleet_name", "");
 
