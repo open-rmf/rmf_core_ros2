@@ -14,6 +14,7 @@ jobs:
         with:
           required-ros-distributions: foxy
       - name: cyclone
+        run: |
           sudo apt update
           sudo apt install ros-foxy-rmw-cyclonedds-cpp -y
       - name: tsan_build_test
