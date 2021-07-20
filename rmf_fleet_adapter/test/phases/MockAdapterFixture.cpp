@@ -68,7 +68,7 @@ MockAdapterFixture::MockAdapterFixture()
    *                   1------2
    *                   |
    *                   |
-   *                   0
+   *                   0 (charger)
    **/
 
   auto add_bidir_lane = [&](const std::size_t w0, const std::size_t w1)

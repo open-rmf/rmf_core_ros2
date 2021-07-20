@@ -25,6 +25,7 @@ set(dep_pkgs
   rclcpp
   rclcpp_components
   rmf_utils
+  rmf_charger_msgs
   rmf_dispenser_msgs
   rmf_ingestor_msgs
   rmf_door_msgs
@@ -80,6 +81,7 @@ target_link_libraries(rmf_fleet_adapter
     ${rmf_lift_msgs_LIBRARIES}
     ${rmf_dispenser_msgs_LIBRARIES}
     ${rmf_ingestor_msgs_LIBRARIES}
+    ${rmf_charger_msgs_LIBRARIES}
 )
 
 target_include_directories(rmf_fleet_adapter
@@ -92,6 +94,7 @@ target_include_directories(rmf_fleet_adapter
     ${rmf_task_msgs_INCLUDE_DIRS}
     ${rmf_battery_INCLUDE_DIRS}
   PRIVATE
+    ${rmf_charger_msgs_INCLUDE_DIRS}
     ${rmf_door_msgs_INCLUDE_DIRS}
     ${rmf_lift_msgs_INCLUDE_DIRS}
     ${rmf_dispenser_msgs_INCLUDE_DIRS}
@@ -110,6 +113,7 @@ if (BUILD_TESTING)
       test/phases/test_DoorOpen.cpp
       test/phases/test_DoorClose.cpp
       test/phases/test_RequestLift.cpp
+      test/phases/test_ReadyToCharge.cpp
       test/phases/test_DispenseItem.cpp
       test/phases/test_IngestItem.cpp
       test/phases/test_GoToPlace.cpp
@@ -130,6 +134,7 @@ if (BUILD_TESTING)
       ${rmf_lift_msgs_INCLUDE_DIRS}
       ${rmf_dispenser_msgs_INCLUDE_DIRS}
       ${rmf_ingestor_msgs_INCLUDE_DIRS}
+      ${rmf_charger_msgs_INCLUDE_DIRS}
       ${std_msgs_INCLUDE_DIRS}
   )
   target_link_libraries(test_rmf_fleet_adapter
@@ -137,6 +142,7 @@ if (BUILD_TESTING)
       # private libraries of rmf_fleet_adapter
       rmf_rxcpp
       ${rmf_task_msgs_LIBRARIES}
+      ${rmf_charger_msgs_LIBRARIES}
       ${rmf_door_msgs_LIBRARIES}
       ${rmf_lift_msgs_LIBRARIES}
       ${rmf_dispenser_msgs_LIBRARIES}

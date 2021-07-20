@@ -20,6 +20,9 @@
 
 #include <rmf_rxcpp/Transport.hpp>
 
+#include <rmf_charger_msgs/msg/charger_cancel.hpp>
+#include <rmf_charger_msgs/msg/charger_request.hpp>
+#include <rmf_charger_msgs/msg/charger_state.hpp>
 #include <rmf_dispenser_msgs/msg/dispenser_request.hpp>
 #include <rmf_dispenser_msgs/msg/dispenser_result.hpp>
 #include <rmf_dispenser_msgs/msg/dispenser_state.hpp>
@@ -105,6 +108,13 @@ public:
   using FleetStatePub = rclcpp::Publisher<FleetState>::SharedPtr;
   const FleetStatePub& fleet_state() const;
 
+  using ChargerState = rmf_charger_msgs::msg::ChargerState;
+  using ChargerStateObs =  rxcpp::observable<ChargerState::SharedPtr>;
+  const ChargerStateObs& charger_state() const;
+
+  using ChargerRequest = rmf_charger_msgs::msg::ChargerRequest;
+  using ChargerRequestPub = rclcpp::Publisher<ChargerRequest>::SharedPtr;
+  const ChargerRequestPub& charger_request() const;
   template<typename DurationRepT, typename DurationT, typename CallbackT>
   rclcpp::TimerBase::SharedPtr try_create_wall_timer(
     std::chrono::duration<DurationRepT, DurationT> period,
@@ -160,6 +170,8 @@ private:
   Bridge<IngestorResult> _ingestor_result_obs;
   Bridge<IngestorState> _ingestor_state_obs;
   FleetStatePub _fleet_state_pub;
+  Bridge<ChargerState> _charger_state_obs;
+  ChargerRequestPub _charger_request_pub;
 };
 
 } // namespace agv
