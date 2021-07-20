@@ -86,26 +86,27 @@ SCENARIO("Action communication with client and server", "[ActionInterface]")
 
   WHEN("Add Task")
   {
-    // Add invalid Task!
-    TaskStatusPtr status_ptr(new TaskStatus);
+    {
+      // Add invalid Task!
+      TaskStatusPtr status_ptr(new TaskStatus);
 
-    action_client->add_task("wrong_server", task_profile1, status_ptr);
+      action_client->add_task("wrong_server", task_profile1, status_ptr);
 
-    executor.spin_until_future_complete(ready_future,
-      rmf_traffic::time::from_seconds(0.5));
+      executor.spin_until_future_complete(ready_future,
+        rmf_traffic::time::from_seconds(0.5));
 
-    // should not receive cuz incorrect serverid
-    REQUIRE(status_ptr->state == TaskStatus::State::Pending);
+      // should not receive cuz incorrect serverid
+      REQUIRE(status_ptr->state == TaskStatus::State::Pending);
 
-    action_client->add_task("test_server", task_profile1, status_ptr);
-    executor.spin_until_future_complete(ready_future,
-      rmf_traffic::time::from_seconds(0.5));
+      action_client->add_task("test_server", task_profile1, status_ptr);
+      executor.spin_until_future_complete(ready_future,
+        rmf_traffic::time::from_seconds(0.5));
 
-    // check status
-    REQUIRE(status_ptr->state == TaskStatus::State::Queued);
+      // check status
+      REQUIRE(status_ptr->state == TaskStatus::State::Queued);
+    }
 
     // status ptr is destroyed, should not have anymore tracking
-    status_ptr.reset();
     REQUIRE(action_client->size() == 0);
   }
 
